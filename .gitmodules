@@ -1,0 +1,15 @@
+[submodule "lib/alsa"]
+	path = lib/alsa
+	url = https://github.com/alsa-project/alsa-lib.git
+[submodule "lib/speexdsp"]
+	path = lib/speexdsp
+	url = https://github.com/xiph/speexdsp.git
+[submodule "lib/rnnoise"]
+	path = lib/rnnoise
+	url = https://github.com/xiph/rnnoise.git
+[submodule "lib/fdk-aac"]
+	path = lib/fdk-aac
+	url = https://github.com/mstorsjo/fdk-aac.git
+[submodule "lib/boost"]
+	path = lib/boost
+	url = https://github.com/boostorg/boost.git
