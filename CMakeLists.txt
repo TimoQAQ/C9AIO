@@ -9,7 +9,7 @@ set(GCC_PATH "/opt/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi")
 set(CMAKE_FIND_ROOT_PATH ${GCC_PATH})
 set(CMAKE_C_COMPILER "${GCC_PATH}/bin/arm-linux-gnueabi-gcc")
 set(CMAKE_CXX_COMPILER "${GCC_PATH}/bin/arm-linux-gnueabi-g++")
-
+set(ENV{PATH} "${CMAKE_FIND_ROOT_PATH}/bin:$ENV{PATH}")
 # 设置其他交叉编译选项
 #set(CMAKE_SYSROOT /opt/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi)
 #set(CMAKE_LIBRARY_PATH <path_to_cross_libraries>)
@@ -23,5 +23,31 @@ set(SOURCES
     src/main.cpp
 )
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/alsa/include)
+
+# 编译库文件
+execute_process(
+  COMMAND autoreconf -i
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/alsa
+)
+
+execute_process(
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/lib/alsa/configure --host=arm-linux-gnueabi --prefix=${CMAKE_CURRENT_BINARY_DIR}/alsa
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/alsa
+)
+
+execute_process(
+  COMMAND make -j8
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/alsa
+)
+
+execute_process(
+  COMMAND make install
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/alsa
+)
+
+link_directories(${CMAKE_CURRENT_BINARY_DIR}/alsa/lib)
+
 # 生成动态库
 add_library(c9sdk SHARED ${SOURCES})
+target_link_libraries(c9sdk PRIVATE asound)
